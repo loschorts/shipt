@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(version: 20170127040749) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "category_products", force: :cascade do |t|
+    t.integer  "category_id"
+    t.integer  "product_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["category_id", "product_id"], name: "index_category_products_on_category_id_and_product_id", unique: true, using: :btree
+    t.index ["category_id"], name: "index_category_products_on_category_id", using: :btree
+    t.index ["product_id"], name: "index_category_products_on_product_id", using: :btree
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string   "first_name"
     t.string   "last_name"
@@ -47,17 +57,16 @@ ActiveRecord::Schema.define(version: 20170127040749) do
   end
 
   create_table "products", force: :cascade do |t|
-    t.integer  "category_id"
-    t.string   "name",                      null: false
-    t.float    "quantity",    default: 0.0
+    t.string   "name",                     null: false
+    t.float    "quantity",   default: 0.0
     t.string   "unit"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["category_id"], name: "index_products_on_category_id", using: :btree
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
+  add_foreign_key "category_products", "categories"
+  add_foreign_key "category_products", "products"
   add_foreign_key "line_items", "orders"
   add_foreign_key "line_items", "products"
   add_foreign_key "orders", "customers"
-  add_foreign_key "products", "categories"
 end
