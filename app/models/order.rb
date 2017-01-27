@@ -1,6 +1,6 @@
 class Order < ApplicationRecord
-	STATUSES = {
-		shopping: 0,
+	STATUS = {
+		in_cart: 0,
 		assembling: 1,
 		awaiting_delivery: 2,
 		en_route: 3,
@@ -12,12 +12,39 @@ class Order < ApplicationRecord
 	has_many :products, through: :line_items
 	has_many :categories, through: :products
   belongs_to :customer
-  validates :status, inclusion: {in: 0..STATUSES.length}
+  validates :status, inclusion: {in: 0..STATUS.length}
 
   def add(product, quantity)
   	product = product.is_a?(String) ? 
   		Product.find_by(name: product) : Product.find(product)
   	line_items.create! product: product, quantity: quantity
+  end
+
+  def self.inchoate
+  	where("status < #{STATUS[:assembling]}")
+  end
+
+  def self.in_fulfillment
+  	where("status BETWEEN #{STATUS[:assembling]} AND #{STATUS[:en_route]} ")
+  end
+
+  def self.completed
+  	where(status: STATUS[:delivered])
+  end
+
+  def self.terminated
+  	where("status > #{STATUS[:delivered]}")
+  end
+
+  def self.in_timeframe(params)
+    start_date = params[:start_date] || DateTime.new(1,1,1)
+    end_date = params[:end_date] || DateTime.new(9999,12,31)
+
+    Order.completed.where(completion_date: start_date..end_date)
+  end
+
+  def self.by_week
+    select
   end
 
   def checkout! 
@@ -28,25 +55,26 @@ class Order < ApplicationRecord
   			product.update!(quantity: product.quantity - i.quantity)
   		end
 
-  		update!(status: STATUSES[:assembling])
+  		update!(status: STATUS[:assembling])
   	end
 
   end
 
   def deliver!
-  	update!(status: STATUSES[:awaiting_delivery])
+  	update!(status: STATUS[:awaiting_delivery])
   end
 
   def pick_up!
-  	update!(status: STATUSES[:en_route])
+  	update!(status: STATUS[:en_route])
   end
 
   def drop_off!
-  	update!(status: STATUSES[:delivered])
+  	update!(status: STATUS[:delivered], completion_date: DateTime.now)
+
   end
 
   def get_status
-  	STATUSES[status]
+  	STATUS[status]
   end
 
   # for debugging

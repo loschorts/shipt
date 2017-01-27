@@ -7,7 +7,6 @@ class Product < ApplicationRecord
 	validates :name, :quantity, presence: true
 	validate :sufficient_stock
 
-
 	private
 
 	def sufficient_stock
