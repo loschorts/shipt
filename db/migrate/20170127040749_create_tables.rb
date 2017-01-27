@@ -20,6 +20,8 @@ class CreateTables < ActiveRecord::Migration[5.0]
       t.timestamps
     end
 
+    add_index :categories, :name, unique: true
+
     create_table :products do |t|
       t.string :name, null: false
       t.float :quantity, default: 0
@@ -27,6 +29,8 @@ class CreateTables < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
+
+    add_index :products, :name, unique: true
 
     create_table :category_products do |t|
     	t.references :category, foreign_key: true
