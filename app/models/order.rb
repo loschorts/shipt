@@ -9,6 +9,8 @@ class Order < ApplicationRecord
 	}
 
 	has_many :line_items
+	has_many :products, through: :line_items
+	has_many :categories, through: :products
   belongs_to :customer
   validates :status, inclusion: {in: 0..STATUSES.length}
 
@@ -47,9 +49,11 @@ class Order < ApplicationRecord
   	STATUSES[status]
   end
 
-
+  # for debugging
 
   def to_s
-  	line_items.includes(:product).each { |i| puts "#{i.product.name}: #{i.quantity} #{i.unit}" }
+  	line_items.includes(:product).each do |i| 
+  		puts "#{i.product.name}: #{i.quantity} #{i.unit}"
+  	end
   end
 end
