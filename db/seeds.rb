@@ -18,7 +18,7 @@ Category.create! name: "Produce" #2
 Category.create! name: "Deli" #3 
 Category.create! name: "Meat, Poultry, and Seafood" #4
 
-Product.create! name: "Proscuitto", 
+Product.create! name: "Prosciutto", 
 	quantity: 10, 
 	unit: "lb",
 	category_ids: [3, 4]
