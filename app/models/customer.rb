@@ -6,13 +6,6 @@ class Customer < ApplicationRecord
 
 	validates :first_name, :last_name, presence: true
 
-	def count_line_items_for(category)
-		categories
-			.group(:name)
-			.where(name: category)
-			.count(:line_items)
-	end
-
 	def self.purchases_by_category
 		query = [
 			"customers.id as customer_id",
@@ -24,10 +17,7 @@ class Customer < ApplicationRecord
 		Customer.joins(:categories)
 			.select(query.join(", "))
 			.group("customers.id, categories.id")
+			.order("customers.id, categories.id")
 	end
 
 end
-
-Customer.first.orders
-
-
