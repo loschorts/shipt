@@ -5,10 +5,13 @@ class Product < ApplicationRecord
 	validates :name, presence: true, uniqueness: true
 
 	validates :name, :quantity, presence: true
-	validates :quantity, 
-		numericality: {
-			greater_than_or_equal_to: 0,
-			message: "#{self.name} has insufficient quantity"
-		}
+	validate :sufficient_stock
+
+
+	private
+
+	def sufficient_stock
+		errors.add(:stock, "#{name} has insufficient stock.") if quantity < 0
+	end
 
 end
