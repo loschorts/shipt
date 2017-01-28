@@ -39,13 +39,14 @@ class Order < ApplicationRecord
   def self.in_timeframe(params)
     start_date = params[:start_date] || DateTime.new(1,1,1)
     end_date = params[:end_date] || DateTime.new(9999,12,31)
+    interval = params[:interval] || "week"
 
-    Order.completed.where(completion_date: start_date..end_date)
+    Order.completed
+      .where(completion_date: start_date..end_date)
+      .select("date_trunc('#{interval}', completion_date) as interval_start")
+      .group("interval_start")
   end
 
-  def self.by_week
-    select
-  end
 
   def checkout! 
   	transaction do 

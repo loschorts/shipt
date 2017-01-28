@@ -7,6 +7,14 @@ class Product < ApplicationRecord
 	validates :name, :quantity, presence: true
 	validate :sufficient_stock
 
+	def self.in_timeframe(params)
+		products = params[:product_ids]
+		query = Order.in_timeframe(params).joins(:products)
+		# query = query.where("product.ids IN ?", products) if products
+
+		query.select("products.name, count(products.id) product_count").group("products.id")
+	end
+
 	private
 
 	def sufficient_stock
