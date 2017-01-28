@@ -37,14 +37,16 @@ class Order < ApplicationRecord
   end
 
   def self.in_timeframe(params)
-    start_date = params[:start_date] || DateTime.new(1,1,1)
-    end_date = params[:end_date] || DateTime.new(9999,12,31)
+
+    start_date = DateTime.strptime(params[:start_date], '%m-%d-%Y')
+    end_date = DateTime.strptime(params[:end_date], '%m-%d-%Y')
+
     interval = params[:interval] || "week"
 
     Order.completed
       .where(completion_date: start_date..end_date)
-      .select("date_trunc('#{interval}', completion_date) as interval_start")
-      .group("interval_start")
+      .select("date_trunc('#{interval}', completion_date) as #{interval}_start")
+      .group("#{interval}_start")
   end
 
 

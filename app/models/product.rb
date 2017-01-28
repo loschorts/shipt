@@ -10,9 +10,9 @@ class Product < ApplicationRecord
 	def self.in_timeframe(params)
 		products = params[:product_ids]
 		query = Order.in_timeframe(params).joins(:products)
-		# query = query.where("product.ids IN ?", products) if products
+		query = query.where("products.id IN (?)", products) if products
 
-		query.select("products.name, count(products.id) product_count").group("products.id")
+		query.select("products.name, products.id, count(products.id) count").group("products.id")
 	end
 
 	private
