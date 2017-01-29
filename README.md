@@ -22,6 +22,24 @@ ORDER BY customers.id, categories.id;
 
 ```
 
+And the same query in ActiveRecord: 
+
+```rb
+	def self.purchases_by_category
+		query = [
+			"customers.id as customer_id",
+			"customers.first_name as customer_first_name",
+			"categories.id as category_id",
+			"categories.name as category_name",
+			"count(line_items.id) as number_purchased"
+		]
+		Customer.joins(:categories)
+			.select(query.join(", "))
+			.group("customers.id, categories.id")
+			.order("customers.id, categories.id")
+	end
+```
+
 # API Endpoints
 
 ## api/products/sales
