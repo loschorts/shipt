@@ -25,6 +25,14 @@ ORDER BY customers.id, categories.id;
 And the same query in ActiveRecord: 
 
 ```rb
+class Customer < ApplicationRecord
+	has_many :orders
+	has_many :line_items, through: :orders
+	has_many :products, through: :orders
+	has_many :categories, through: :products
+
+	validates :first_name, :last_name, presence: true
+
 	def self.purchases_by_category
 		query = [
 			"customers.id as customer_id",
@@ -38,6 +46,8 @@ And the same query in ActiveRecord:
 			.group("customers.id, categories.id")
 			.order("customers.id, categories.id")
 	end
+	
+end
 ```
 
 # API Endpoints
