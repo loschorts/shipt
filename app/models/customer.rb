@@ -20,4 +20,12 @@ class Customer < ApplicationRecord
 			.order("customers.id, categories.id")
 	end
 
+	def detailed_orders
+		orders.joins(:products)
+			.select("orders.*")
+			.select("line_items.quantity quantity")
+			.select("products.id product_id, products.name product_name")
+			.order("orders.id")
+	end
+
 end

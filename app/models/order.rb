@@ -17,23 +17,14 @@ class Order < ApplicationRecord
   def add(product, quantity)
   	product = product.is_a?(String) ? 
   		Product.find_by(name: product) : Product.find(product)
-  	line_items.create! product: product, quantity: quantity
-  end
 
-  def self.inchoate
-  	where("status < #{STATUS[:assembling]}")
-  end
+    in_cart = line_items.find_by(product_id: product.id)
 
-  def self.in_fulfillment
-  	where("status BETWEEN #{STATUS[:assembling]} AND #{STATUS[:en_route]} ")
-  end
-
-  def self.completed
-  	where(status: STATUS[:delivered])
-  end
-
-  def self.terminated
-  	where("status > #{STATUS[:delivered]}")
+    if in_cart
+      in_cart.update!(quantity: in_cart.quantity + quantity)
+    else
+    	line_items.create! product: product, quantity: quantity
+    end
   end
 
   def self.in_timeframe(params)
@@ -49,7 +40,6 @@ class Order < ApplicationRecord
       .group("#{interval}_start")
   end
 
-
   def checkout! 
   	transaction do 
 
@@ -63,24 +53,19 @@ class Order < ApplicationRecord
 
   end
 
-  def deliver!
-  	update!(status: STATUS[:awaiting_delivery])
-  end
-
-  def pick_up!
-  	update!(status: STATUS[:en_route])
-  end
-
-  def drop_off!
-  	update!(status: STATUS[:delivered], completion_date: DateTime.now)
-
+  def set_status(status)
+  	update!(status: STATUS[status])
   end
 
   def get_status
   	STATUS[status]
   end
 
-  # for debugging
+  def self.completed
+    where(status: STATUS[:delivered])
+  end
+
+  # for dev convenience
 
   def to_s
   	line_items.includes(:product).each do |i| 
