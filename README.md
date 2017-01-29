@@ -22,7 +22,7 @@ ORDER BY customers.id, categories.id;
 
 ```
 
-And the same query in ActiveRecord: 
+And the same query in **ActiveRecord**: 
 
 ```rb
 class Customer < ApplicationRecord
