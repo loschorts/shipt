@@ -27,11 +27,8 @@ And the same query in ActiveRecord:
 ```rb
 class Customer < ApplicationRecord
 	has_many :orders
-	has_many :line_items, through: :orders
 	has_many :products, through: :orders
 	has_many :categories, through: :products
-
-	validates :first_name, :last_name, presence: true
 
 	def self.purchases_by_category
 		query = [
@@ -46,7 +43,7 @@ class Customer < ApplicationRecord
 			.group("customers.id, categories.id")
 			.order("customers.id, categories.id")
 	end
-	
+
 end
 ```
 
