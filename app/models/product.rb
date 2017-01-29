@@ -7,7 +7,7 @@ class Product < ApplicationRecord
 	validates :name, :quantity, presence: true
 	validate :sufficient_stock
 
-	def self.in_timeframe(params)
+	def self.sales_in_timeframe(params)
 		products = params[:product_ids]
 		query = Order.in_timeframe(params).joins(:products)
 		query = query.where("products.id IN (?)", products) if products
