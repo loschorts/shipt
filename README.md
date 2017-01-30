@@ -21,7 +21,14 @@ intervals `Dec. 15 - 31`, `Jan. 1 - 31`, and `Feb. 1-14`, not `Dec. 15 - Jan. 14
 - Empty orders are relevant to the `api/customers/:id/orders` API endpoint.
 - An order does not reduce a product's inventory until the order is checked out.
 - Orders cannot be checked out if they would reduce a product's inventory below zero.
-- For Task #3, I assume the query is a list of all customer purchases grouped by customer and category. I used `INNER JOIN` because it was the simplest approach and the prompt did not specify how to treat customers/categories that had no corresponding entries, i.e. a customer with no purchases in a category, or a category with no purchases by a customer. The prompt could be changed to reflect this by using outer joins on either `customers` or `categories`. It also could be changed to accept parameters for finding a specific customer or category's records.
+- For Task #3, I assume the query is a list of all customer purchases grouped by
+customer and category. I used `INNER JOIN` because it was the simplest approach
+and the prompt did not specify how to treat customers/categories that had no
+corresponding entries, i.e. a customer with no purchases in a category, or a
+category with no purchases by a customer. The query could be changed to
+accomodate such entries by using outer joins on either `customers` or
+`categories`. It also could be changed to accept parameters for finding a
+specific customer or category's records.
 
 # Key Components
 
