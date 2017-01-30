@@ -11,4 +11,10 @@ orders = {}
 	orders[od["id"]]["items"] << item unless od["product_id"].nil?
 end
 
-json.array! orders.values
+sorted = orders.values.sort do |a,b|
+	Date.strptime(a["date_completed"], '%m-%d-%Y') <=> 
+	Date.strptime(b["date_completed"], '%m-%d-%Y')	
+end
+
+
+json.array! sorted

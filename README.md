@@ -49,12 +49,14 @@ end
 
 # API Endpoints
 
+API endpoints are all name-spaced under `/api` in order to avoid collision with client-facing routes. They return JSON data. Collections are formatted as arrays to keep with convention.
+
 ## api/products/sales
 
 This endpoint returns the quantity of each product sold during the specified timeframe, grouped day, week, or month. The data is represented as an array of intervals, each with a starting date and a sub-array of sales completed for the specified interval.
 
-[example](http://localhost:3000/api/products/sales?start_date=08-13-2016&end_dat
-[e=12-31-2016&interval=month)
+Example: http://shipt.com/api/products/sales?start_date=08-13-2016&end_dat
+[e=12-31-2016&interval=month
 
 ### params
 
@@ -68,9 +70,6 @@ This endpoint returns the quantity of each product sold during the specified tim
 	- accepted values: 'day', 'week', 'month'
 	- default: 'month'
 
+## api/customers/:id/orders
 
-### Formatting
-
-The data is purposefully left in an un-nested array in order to be use-agnostic;
-future improvement could be made by accepting a "group_by" parameter that allows
-the information to be grouped by time-unit, product, category, etc.
+This endpoint returns the orders created by a given customer, including the order status and items included in the order.
