@@ -74,10 +74,13 @@ class Order < ApplicationRecord
   end
 
   def self.include_empties
-     joins("LEFT OUTER JOIN line_items ON line_items.order_id = orders.id")
+    self
     .joins("LEFT OUTER JOIN customers ON orders.customer_id = customers.id")
-    .joins("LEFT OUTER JOIN products ON products.id = line_items.product_id")
-    .joins("LEFT OUTER JOIN category_products ON category_products.product_id = products.id")
-    .joins("LEFT OUTER JOIN categories ON categories.id = category_products.category_id")
+    .joins("LEFT OUTER JOIN line_items ON line_items.order_id = orders.id")
+    .joins("INNER JOIN products ON products.id = line_items.product_id")
+    .joins("INNER JOIN category_products ON category_products.product_id = products.id")
+    .joins("INNER JOIN categories ON categories.id = category_products.category_id")
+    .select("distinct(line_items.*)")
   end
+
 end
