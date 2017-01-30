@@ -10,4 +10,15 @@ intervals = {}
 	intervals[start]["sales"].push(sale)
 end
 
-json.array! intervals.values
+@params.keys.each do |param|
+	json.set!(param, @params[param])
+end
+
+sorted = intervals.values.sort do |a,b|
+	Date.strptime(a["interval_start"], '%m-%d-%Y') <=> 
+	Date.strptime(b["interval_start"], '%m-%d-%Y')	
+end
+
+json.intervals do 
+	json.array! sorted
+end

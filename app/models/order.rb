@@ -1,11 +1,7 @@
 class Order < ApplicationRecord
 	STATUS = {
 		in_cart: 0,
-		assembling: 1,
-		awaiting_delivery: 2,
-		en_route: 3,
-		delivered: 4,
-		cancelled: 5
+    complete: 1
 	}
 
   STATUS_CODES = STATUS.invert
@@ -31,13 +27,13 @@ class Order < ApplicationRecord
 
   def self.in_timeframe(params)
 
-    start_date = Date.parse(params[:start_date], '%m-%d-%Y') 
-    end_date = Date.parse(params[:end_date], '%m-%d-%Y')
+    start_date = Date.strptime(params[:start_date], '%m-%d-%Y') 
+    end_date = Date.strptime(params[:end_date], '%m-%d-%Y')
 
     interval = params[:interval]
 
     Order
-      .where(status: Order::STATUS[:delivered])
+      .where(status: Order::STATUS[:complete])
       .where(completion_date: start_date..end_date)
       .select("to_char(date_trunc('#{interval}', completion_date), 'MM-DD-YYYY') as interval_start")
       .group("interval_start")
@@ -51,7 +47,7 @@ class Order < ApplicationRecord
   			product.update!(quantity: product.quantity - i.quantity)
   		end
 
-  		update!(status: STATUS[:assembling])
+  		update!(status: STATUS[:complete])
   	end
 
   end
@@ -64,14 +60,6 @@ class Order < ApplicationRecord
   	STATUS[status]
   end
 
-  # for dev convenience
-
-  def to_s
-  	line_items.includes(:product).each do |i| 
-  		puts "#{i.product.name}: #{i.quantity} #{i.unit}"
-  	end
-  end
-
   def self.include_empties
     self
     .joins("LEFT OUTER JOIN line_items ON line_items.order_id = orders.id")
@@ -80,6 +68,12 @@ class Order < ApplicationRecord
     .joins("INNER JOIN category_products ON category_products.product_id = products.id")
     .joins("INNER JOIN categories ON categories.id = category_products.category_id")
     .select("distinct(line_items.id)")
+  end
+
+  def to_s
+  	line_items.includes(:product).each do |i| 
+  		puts "#{i.product.name}: #{i.quantity} #{i.unit}"
+  	end
   end
 
 end

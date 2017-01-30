@@ -51,6 +51,17 @@ end
 
 ## api/products/sales
 
+[example](http://localhost:3000/api/products/sales?start_date=08-13-2016&end_dat
+[e=12-31-2016&interval=month)
+
+### params
+
+- **`start_date`**, **`end_date`**: format: MM-DD-YYYY, inclusive
+- **`interval`**: 
+	- groups sales data by the given interval
+	- accepted values: `day`, `week`, `month`
+
+
 ### Formatting
 
 The data is purposefully left in an un-nested array in order to be use-agnostic;
