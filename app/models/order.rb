@@ -8,6 +8,8 @@ class Order < ApplicationRecord
 		cancelled: 5
 	}
 
+  STATUS_CODES = STATUS.invert
+
 	has_many :line_items
 	has_many :products, through: :line_items
 	has_many :categories, through: :products
@@ -34,7 +36,8 @@ class Order < ApplicationRecord
 
     interval = params[:interval] || "week"
 
-    Order.completed
+    Order
+      .where(status: status[:delivered])
       .where(completion_date: start_date..end_date)
       .select("to_char(date_trunc('#{interval}', completion_date), 'MM-DD-YYYY') as #{interval}_start")
       .group("#{interval}_start")
@@ -59,10 +62,6 @@ class Order < ApplicationRecord
 
   def get_status
   	STATUS[status]
-  end
-
-  def self.completed
-    where(status: STATUS[:delivered])
   end
 
   # for dev convenience
