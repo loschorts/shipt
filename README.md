@@ -14,15 +14,15 @@ git clone git@github.com:loschorts/shipt.git
 cd shipt
 bundle
 rails s
-open localhost:3000/
 ```
 
 Then open:
-[product sales API example][ex1]
-[customer orders API example][ex2]
 
-[ex1]: localhost:3000/api/product/sales/?start_date=08-01-2016&end_date=12-01-2016&product_ids[]=1&product_ids[]=2&product_ids[]=3
-[ex2]: localhost:3000/api/customers/1/orders
+- [product sales API example][ex1]
+- [customer orders API example][ex2]
+
+[ex1]:localhost:3000/api/product/sales/?start_date=08-01-2016&end_date=12-01-2016&product_ids[]=1&product_ids[]=2&product_ids[]=3
+[ex2]:localhost:3000/api/customers/1/orders
 
 ## Assumptions
 
