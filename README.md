@@ -56,7 +56,9 @@ end
 
 ### params
 
-- **`start_date`**, **`end_date`**: format: MM-DD-YYYY, inclusive
+- **`start_date`**, **`end_date`**: 
+	- format: MM-DD-YYYY
+	- inclusive
 - **`interval`**: 
 	- groups sales data by the given interval
 	- accepted values: `day`, `week`, `month`
