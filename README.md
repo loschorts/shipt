@@ -11,7 +11,7 @@ application could also be used to serve client-side assets as well.
 In your terminal: 
 
 ```bash
-git clone git@github.com:loschorts/shipt.git && cd shipt && bundle && rails s
+git clone git@github.com:loschorts/shipt.git && cd shipt && bundle && bundle exec rake db:reset && rails s
 ```
 
 Then open:
@@ -19,7 +19,7 @@ Then open:
 - [product sales API example][ex1]
 - [customer orders API example][ex2]
 
-[ex1]: http://localhost:3000/api/product/sales/?start_date=08-01-2016&end_date=12-01-2016&product_ids[]=1&product_ids[]=2&product_ids[]=3
+[ex1]: http://localhost:3000/api/products/sales/?start_date=08-01-2016&end_date=12-01-2016&product_ids[]=1&product_ids[]=2&product_ids[]=3
 [ex2]: http://localhost:3000/api/customers/1/orders
 
 ## Assumptions
