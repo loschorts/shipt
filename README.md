@@ -51,7 +51,7 @@ end
 
 ## api/products/sales
 
-This endpoint returns the quantity of each product sold during the specified timeframe, grouped by the specified interval. Data is represented as an array of intervals, each with a starting date and a sub-array of sales completed for the specified interval.
+This endpoint returns the quantity of each product sold during the specified timeframe, grouped day, week, or month. The data is represented as an array of intervals, each with a starting date and a sub-array of sales completed for the specified interval.
 
 [example](http://localhost:3000/api/products/sales?start_date=08-13-2016&end_dat
 [e=12-31-2016&interval=month)
