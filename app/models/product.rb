@@ -12,7 +12,10 @@ class Product < ApplicationRecord
 		query = Order.in_timeframe(params).joins(:products)
 		query = query.where("products.id IN (?)", products) if products
 
-		query.select("products.name product_name, products.id product_id, sum(line_items.quantity) units_sold, products.unit").group("products.id")
+		query.select(
+			"products.name product_name, products.id product_id, " + 
+			"sum(line_items.quantity) units_sold, products.unit")
+			.group("products.id")
 	end
 
 	private

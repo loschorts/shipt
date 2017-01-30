@@ -19,8 +19,9 @@ intervals `Dec. 15 - 31`, `Jan. 1 - 31`, and `Feb. 1-14`, not `Dec. 15 - Jan. 14
 - Incomplete orders (i.e. orders not checked out) are not considered sold for the
 `api/products/sales` API endpoint.
 - Empty orders are relevant to the `api/customers/:id/orders` API endpoint.
-- An order does reduce a product's inventory until the order is checked out.
+- An order does not reduce a product's inventory until the order is checked out.
 - Orders cannot be checked out if they would reduce a product's inventory below zero.
+- For Task #3, I assume the query is a list of all customer purchases grouped by customer and category. I used `INNER JOIN` because it was the simplest approach and the prompt did not specify how to treat customers/categories that had no corresponding entries, i.e. a customer with no purchases in a category, or a category with no purchases by a customer. The prompt could be changed to reflect this by using outer joins on either `customers` or `categories`. It also could be changed to accept parameters for finding a specific customer or category's records.
 
 # Key Components
 
@@ -50,7 +51,7 @@ is routed to `Api::ProductsController#sales`. It accepts the following parameter
 - `start_date` & `end_date`: `MM-DD-YYYY` formatted date strings. Inclusive. Optional.
 - `interval`: String used to set the time interval by which to group results. Accepts 'day',
 'week', and 'month'. Defaults to 'month'. 
-- `product_ids`: Restricts the results to products with listed ids. Optional.
+- `product_ids[]`: Restricts the results to products with listed ids. Optional.
 
 This endpoint is primarily driven by the `Product#sales_in_timeframe` query on the `Product` model.
 
@@ -63,7 +64,10 @@ This endpoint is primarily driven by the `Product#sales_in_timeframe` query on t
 		query = Order.in_timeframe(params).joins(:products)
 		query = query.where("products.id IN (?)", products) if products
 
-		query.select("products.name product_name, products.id product_id, sum(line_items.quantity) units_sold, products.unit").group("products.id")
+		query.select(
+			"products.name product_name, products.id product_id, " + 
+			"sum(line_items.quantity) units_sold, products.unit")
+			.group("products.id")
 	end
 ```
 
@@ -86,12 +90,16 @@ This endpoint is primarily driven by the `Product#sales_in_timeframe` query on t
   end
 ```
 
-The results are then rendered by the JSON view `app/views/api/products/sales.json.jbuilder`, which formats them in a nested manner.
+The results are then rendered by the JSON view
+`app/views/api/products/sales.json.jbuilder`, which formats them in a nested
+manner.
 
 
 ### `api/customers/#id/orders`
 
-This GET request returns the orders for a given customer, listing each order's items. It relies primarily on `Customer#detailed_orders`, which fetches a customer's orders and accompanying items.
+This GET request returns the orders for a given customer, listing each order's
+items. It relies primarily on `Customer#detailed_orders`, which fetches a
+customer's orders and accompanying items.
 
 ```rb
 	def detailed_orders
@@ -123,8 +131,11 @@ This GET request returns the orders for a given customer, listing each order's i
 
 # Specific Prompt Responses
 
-## SQL Query for Counting Customer Purchases by Category
+## Task 3 & 4: Counting Customer Purchases by Category
 
+Please see assumptions above.
+
+The SQL query: 
 ```sql
 
 SELECT customers.id as customer_id, customers.first_name as customer_first_name,
@@ -169,7 +180,7 @@ class Customer < ApplicationRecord
 end
 ```
 
-## One-Click Ordering of Lists
+## Additional Questions 1: One-Click Ordering of Lists
 
 A list very closely resembles an order in that it is comprised of line items,
 i.e. specific quantities of each product.
@@ -202,11 +213,11 @@ order. This could be circumvented by allowing a customers to have multiple order
 open at once, though it might complicate the UX.
 
 
-## Inventory Distribution
+## Additional Questions 2: Inventory Distribution
 
 Inventory distribution would be handled on a first-checked-out, first-served
 basis. Because we can't know when pending orders will be checked-out, if ever,
-reserving inventory  can't be reasonably done until an order has actually been
+reserving inventory can't be reasonably done until an order has actually been
 placed. During the checkout process, orders requesting product quantities that
 can't be fulfilled would be denied.
 
@@ -238,3 +249,7 @@ of items that couldn't be fulfilled to the end user and ask them how to proceed.
 (ex. a `group_by` parameter on `api/products/sales` to specify whether results
 should be grouped by interval or product).
 - Build an HTML endpoint `api/help` providing information on API usage.
+
+# Conclusion
+
+Thanks for taking the time to review my work. I look forward to hearing from the Shipt team!
