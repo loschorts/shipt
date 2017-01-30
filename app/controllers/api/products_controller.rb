@@ -9,7 +9,7 @@ class Api::ProductsController < ApplicationController
 	private
 
 	def timeframe_params
-		params.permit(:start_date, :end_date, :interval, :group_by, product_ids: [])
+		params.permit(:start_date, :end_date, :interval, product_ids: [])
 	end
 	
 	def ensure_timeframe_params

@@ -1,7 +1,8 @@
 class Order < ApplicationRecord
 	STATUS = {
 		in_cart: 0,
-    complete: 1
+    checked_out: 1,
+    delivered: 2
 	}
 
   STATUS_CODES = STATUS.invert
@@ -29,11 +30,10 @@ class Order < ApplicationRecord
 
     start_date = Date.strptime(params[:start_date], '%m-%d-%Y') 
     end_date = Date.strptime(params[:end_date], '%m-%d-%Y')
-
     interval = params[:interval]
 
     Order
-      .where(status: Order::STATUS[:complete])
+      .where(status: Order::STATUS[:checked_out])
       .where(completion_date: start_date..end_date)
       .select("to_char(date_trunc('#{interval}', completion_date), 'MM-DD-YYYY') as interval_start")
       .group("interval_start")
@@ -47,7 +47,7 @@ class Order < ApplicationRecord
   			product.update!(quantity: product.quantity - i.quantity)
   		end
 
-  		update!(status: STATUS[:complete])
+  		update!(status: STATUS[:checked_out])
   	end
 
   end
