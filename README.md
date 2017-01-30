@@ -10,12 +10,12 @@ application could also be used to serve client-side assets as well.
 
 I employed the following assumptions: 
 
-- For the `api/product/sales` API, an interval starts at the beginning of a
+- For the `api/product/sales` API endpoint, an interval starts at the beginning of a
 calendar day/week/month, even if the start date does not. For example, a search
 from '12-15-16' to '2-14-16' using a 'month' interval will group the results in
-intervals `Dec. 15 - 31`, `Jan. 1 - 31`, and `Feb. 1-15`, not `Dec. 15 - Jan. 14`, `Jan.
+intervals `Dec. 15 - 31`, `Jan. 1 - 31`, and `Feb. 1-14`, not `Dec. 15 - Jan. 14`, `Jan.
 15 - Feb. 14`.
-- An order represents a transaction from cart to checkout to delivery.
+- An order represents a transaction from cart to checkout.
 - Incomplete orders (i.e. orders not checked out) are not considered sold for the
 `api/products/sales` API endpoint.
 - Empty orders are relevant to the `api/customers/:id/orders` API endpoint.
