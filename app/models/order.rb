@@ -26,6 +26,12 @@ class Order < ApplicationRecord
     end
   end
 
+  def add_by_list(list)
+    list.each do |item, quantity|
+      add(item, quantity)
+    end
+  end
+
   def self.in_timeframe(params)
 
     start_date = Date.strptime(params[:start_date], '%m-%d-%Y') 

@@ -169,18 +169,70 @@ class Customer < ApplicationRecord
 end
 ```
 
-## One-Click Ordering
+## One-Click Ordering of Lists
+
+A list very closely resembles an order in that it is comprised of line items,
+i.e. specific quantities of each product.
+
+Therefore, I would create a `List` model and `lists` table. A `List` `belongs_to
+:customer` and `has_many :line_items`. I would modify my `line_items` table to
+be polymorphic, allowing `LineItems` to be associated with either an `Order` or
+a `List`.
+
+When a customer adds a list to an order, I would create a duplicate `LineItem`
+attached to the `Order` for each line-item in the `List`.
 
 *Pros*:
+- DRY Code: Reusing `LineItems` across `Orders` and `Lists` would reduce the application's overall complexity.
+- `Lists` can be reused, since they are not treated as transactions like `Orders`.
+- `Lists` can be altered without modifying previous orders that used those lists.
+If, for example, I had made a `list_orders` join table and used that to get the
+`List#line_items` for an `Order` through a `through` association, modifying the
+`List#line_items` would rewrite past `Orders` that it was associated with.
+Duplicating `LineItems` avoids this problem.
+
 *Cons*:
+- Storage: A list-line-item would be duplicated for each order it was attached to,
+increasing storage. However, since lists are relatively small, and I want
+customers to be able to modify them without altering their past orders, this con
+is outweighed.
+- No separate orders: Lists would be added to pre-existing orders, meaning that a
+customer could not ONLY buy list items if there were already items in their
+order. This could be circumvented by allowing a customers to have multiple orders
+open at once, though it might complicate the UX.
+
 
 ## Inventory Distribution
 
+Inventory distribution would be handled on a first-checked-out, first-served
+basis. Because we can't know when pending orders will be checked-out, if ever,
+reserving inventory  can't be reasonably done until an order has actually been
+placed. During the checkout process, orders requesting product quantities that
+can't be fulfilled would be denied.
 
+```rb
+	#order.rb
+  def checkout! 
+  	transaction do 
+
+  		line_items.includes(:product).each do |i|
+  			product = i.product
+  			product.update!(quantity: product.quantity - i.quantity)
+  		end
+
+  		update!(status: STATUS[:checked_out])
+  	end
+
+  end 
+``` 
+
+In a more refined form, this process would return an error message with a list
+of items that couldn't be fulfilled to the end user and ask them how to proceed.
 
 # Plans for Future Development
 
 - Build specs for Models and API endpoints.
+- Build Lists feature.
 - Incorporate user authentication to protect sensitive endpoints.
 - Add support for additional parameters to specify the shape of the returned data
 (ex. a `group_by` parameter on `api/products/sales` to specify whether results
