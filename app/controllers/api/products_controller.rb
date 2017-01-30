@@ -1,20 +1,19 @@
 class Api::ProductsController < ApplicationController
-	before_action :coerce_params
+	before_action :set_default_params
 
 	def sales
-		@sales = Product.sales_in_timeframe(timeframe_params)
-		render json: @sales
+		@sales = Product.sales_in_timeframe(timeframe_params).as_json
+		# render json: @sales
 	end
 
 	private
 
 	def timeframe_params
-		params.permit(:start_date, :end_date, :interval, product_ids: [])
+		params.permit(:start_date, :end_date, :interval, :group_by, product_ids: [])
 	end
 	
-	# Validates the interval to prevent SQL injection and injects default values
-	# for params not provided.
-	def coerce_params
+	# Injects default values for params not provided.
+	def set_default_params
 		intervals = %w(day week month)
 		params[:interval] = intervals.detect {|i| i == params[:interval]} || "week"
 

@@ -31,16 +31,16 @@ class Order < ApplicationRecord
 
   def self.in_timeframe(params)
 
-    start_date = Date.parse(params[:start_date], '%m-%d-%Y')
+    start_date = Date.parse(params[:start_date], '%m-%d-%Y') 
     end_date = Date.parse(params[:end_date], '%m-%d-%Y')
 
-    interval = params[:interval] || "week"
+    interval = params[:interval]
 
     Order
-      .where(status: status[:delivered])
+      .where(status: Order::STATUS[:delivered])
       .where(completion_date: start_date..end_date)
-      .select("to_char(date_trunc('#{interval}', completion_date), 'MM-DD-YYYY') as #{interval}_start")
-      .group("#{interval}_start")
+      .select("to_char(date_trunc('#{interval}', completion_date), 'MM-DD-YYYY') as interval_start")
+      .group("interval_start")
   end
 
   def checkout! 
