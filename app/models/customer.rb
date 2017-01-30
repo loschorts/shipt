@@ -21,10 +21,12 @@ class Customer < ApplicationRecord
 	end
 
 	def detailed_orders
-		orders.joins(:products)
-			.select("orders.*")
+		Order.include_empties
+			.where(customer_id: self.id)
+			.select("orders.id, orders.status, orders.updated_at")
+			.select("to_char(orders.completion_date, 'MM-DD-YYYY') date_completed")
 			.select("line_items.quantity quantity")
-			.select("products.id product_id, products.name product_name")
+			.select("products.id product_id, products.name product_name, products.unit unit")
 			.order("orders.id")
 	end
 

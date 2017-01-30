@@ -1,7 +1,6 @@
 class Api::CustomersController < ApplicationController
 	def orders
 		@customer = Customer.find(params[:id])
-		@orders = @customer.detailed_orders if @customer
-		render json: @orders.as_json
+		@order_items = @customer.detailed_orders.as_json if @customer
 	end
 end
