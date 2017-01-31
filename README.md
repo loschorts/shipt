@@ -11,7 +11,7 @@ application could also be used to serve client-side assets as well.
 In your terminal: 
 
 ```bash
-git clone git@github.com:loschorts/shipt.git && cd shipt && bundle && bundle exec rake db:reset && rails s
+git clone https://github.com/loschorts/shipt.git && cd shipt && bundle && bundle exec rake db:reset && rails s
 ```
 
 Then open:
