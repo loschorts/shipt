@@ -151,8 +151,8 @@ customer's orders and accompanying items.
 		- `customers_controller.rb`
 		- `products_controller.rb`
 	- `views`
-		`customers/orders.json.jbuilder`
-		`sales/json.jbuilder`
+		- `customers/orders.json.jbuilder`
+		- `sales/json.jbuilder`
 - `db/migrate/*`
 - `config/routes.rb`
 
