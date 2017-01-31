@@ -8,10 +8,12 @@ application could also be used to serve client-side assets as well.
 
 ## To Run
 
+**Dependencies:** Ruby, Ruby on Rails, Postgres, git
+
 In your terminal: 
 
 ```bash
-git clone https://github.com/loschorts/shipt.git && cd shipt && bundle && bundle exec rake db:reset && rails s
+git clone https://github.com/loschorts/shipt.git && cd shipt && bundle && open -a postgres && bundle exec rake db:reset && rails s
 ```
 
 Then open:
@@ -76,7 +78,8 @@ is routed to `Api::ProductsController#sales`. It accepts the following parameter
 'week', and 'month'. Defaults to 'month'. 
 - `product_ids[]`: Restricts the results to products with listed ids. Optional.
 
-This endpoint is primarily driven by the `Product#sales_in_timeframe` query on the `Product` model.
+This endpoint is primarily driven by the `Product#sales_in_timeframe` query on
+the `Product` model.
 
 ```rb
 
